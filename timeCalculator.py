@@ -205,7 +205,7 @@ def display_status(start_time, lunch_start, lunch_end):
     progress_percentage = min((worked_seconds / total_work_seconds) * 100, 100)
     
     # Create main table
-    table = Table(title="🕒 Office Hours Calculator", box=box.ROUNDED, style="cyan")
+    table = Table(title=" Office Hours Calculator", box=box.ROUNDED, style="cyan")
     table.add_column("Description", style="bold", width=20)
     table.add_column("Time", style="bold green", width=15)
     table.add_column("Details", style="dim", width=25)
@@ -247,11 +247,11 @@ def display_status(start_time, lunch_start, lunch_end):
     # Add notifications for important events
     current_time = get_current_time()
     if abs((current_time - lunch_start).total_seconds()) < 30:
-        console.print("[warning]🍽️  Lunch time![/warning]")
+        console.print("[warning] Lunch time![/warning]")
     elif abs((current_time - end_time).total_seconds()) < 300:  # 5 minutes before end
-        console.print("[highlight]🔔 Work day ending in 5 minutes![/highlight]")
+        console.print("[highlight] Work day ending in 5 minutes![/highlight]")
     elif current_time >= end_time:
-        console.print("[success]🎉 Work day completed! You can go home now.[/success]")
+        console.print("[success] Work day completed! You can go home now.[/success]")
 
 # Function to validate input times
 def validate_times(start_time, lunch_start, lunch_end):
@@ -309,7 +309,7 @@ Examples:
     # Validate times
     errors = validate_times(start_time, lunch_start, lunch_end)
     if errors:
-        console.print("[danger]⚠️  Input validation errors:[/danger]")
+        console.print("[danger] Input validation errors:[/danger]")
         for error in errors:
             console.print(f"[danger]• {error}[/danger]")
         console.print("\n[info]Do you want to continue anyway? (y/n)[/info]")
@@ -323,7 +323,7 @@ Examples:
     # Log the session start
     logger.info(f"Session started: Start={args.start}, Lunch={args.lunch_start}-{args.lunch_end}")
     
-    console.print("[success]🚀 Office Hours Calculator started![/success]")
+    console.print("[success] Office Hours Calculator started![/success]")
     console.print("[info]Press Ctrl+C to exit[/info]\n")
     
     try:
