@@ -93,7 +93,7 @@ def handle_cross_day(start_time, lunch_start, lunch_end):
 # Function to calculate end time
 def calculate_end_time(start_time, lunch_start, lunch_end):
     """Calculate when the work day will end"""
-    work_duration = timedelta(hours=WORK_HOURS)
+    work_duration = timedelta(hours=TOTAL_HOURS)
     lunch_duration = lunch_end - lunch_start
     
     # If lunch is longer than scheduled, only count the excess as work time
@@ -108,7 +108,7 @@ def calculate_end_time(start_time, lunch_start, lunch_end):
         bonus_work_time = timedelta(0)
     
     # Calculate end time: start + work hours + effective lunch duration
-    end_time = start_time + work_duration + effective_lunch_duration
+    end_time = start_time + work_duration - bonus_work_time
     
     return end_time
 
@@ -196,8 +196,8 @@ def display_status(start_time, lunch_start, lunch_end):
     end_time = calculate_end_time(start_time, lunch_start, lunch_end)
     worked_time = calculate_worked_time(start_time, lunch_start, lunch_end)
     remaining_time = calculate_remaining_time(end_time)
-    status, status_style = get_work_status(start_time, lunch_start, lunch_end, end_time)
-    lunch_duration, lunch_savings = calculate_lunch_info(lunch_start, lunch_end)
+    status, _ = get_work_status(start_time, lunch_start, lunch_end, end_time)
+    _, lunch_savings = calculate_lunch_info(lunch_start, lunch_end)
     
     # Calculate progress percentage
     total_work_seconds = WORK_HOURS * 3600
@@ -217,8 +217,10 @@ def display_status(start_time, lunch_start, lunch_end):
     table.add_row("End Time", end_time.strftime("%H:%M"), "Work day ends")
     table.add_row("Current Status", status, f"As of {datetime.now().strftime('%H:%M:%S')}")
     table.add_row("Worked Time", format_timedelta(worked_time), f"{progress_percentage:.1f}% complete")
-    table.add_row("Remaining Time", format_timedelta(remaining_time), "Until work ends")
-    
+    if remaining_time > timedelta(0):
+        table.add_row("Remaining Time", format_timedelta(remaining_time), "Until work ends")
+    else:
+        table.add_row("Overtime", format_timedelta(-remaining_time), "Work day exceeded") 
     # Add lunch information
     if lunch_savings > timedelta(0):
         table.add_row("Lunch Saved", format_timedelta(lunch_savings), "Time gained from short lunch")
@@ -239,7 +241,7 @@ def display_status(start_time, lunch_start, lunch_end):
     )
     
     with progress:
-        task = progress.add_task("Work Progress", total=100, completed=progress_percentage)
+        _ = progress.add_task("Work Progress", total=100, completed=progress_percentage)
         time.sleep(0.1)  # Brief pause to show progress bar
     
     # Add notifications for important events
